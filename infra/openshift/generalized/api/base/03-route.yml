@@ -1,0 +1,19 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: trivy-rest-client
+  annotations:
+    openshift.io/host.generated: 'true'
+spec:
+#  host: ppp-namespace-matters.apps.ti03os0n.postcom.deutschepost.de
+  subdomain: ''
+  to:
+    kind: Service
+    name: trivy-rest-client
+    weight: 100
+  port:
+    targetPort: 8084-tcp
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: None
+  wildcardPolicy: None

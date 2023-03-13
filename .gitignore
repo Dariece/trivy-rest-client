@@ -8,7 +8,9 @@ Thumbs.db
 bin
 target
 build/
+trivy/trivy
 .gradle
+*.gz
 
 # Eclipse Project Files #
 

@@ -1,0 +1,21 @@
+buildscript {
+    repositories {
+        maven {
+            url nexusBaseUrl + '/repository/public/'
+        }
+    }
+    dependencies {
+        classpath 'de.undercouch:gradle-download-task:4.0.4'
+    }
+}
+
+apply plugin: de.undercouch.gradle.tasks.download.DownloadTaskPlugin
+
+def trivyVersion="0.38.2"
+
+tasks.register('downloadTrivyBin') {
+    def baseUrl = "https://github.com/aquasecurity/trivy/releases/download/"
+    src baseUrl + "v${trivyVersion}/trivy_${trivyVersion}_Linux-ARM64.tar.gz"
+    dest new File(rootProject.projectDir, 'trivy')
+    overwrite false
+}

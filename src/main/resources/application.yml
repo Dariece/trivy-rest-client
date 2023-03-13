@@ -1,0 +1,37 @@
+info:
+  app:
+    name: "Trivy-Rest-Client"
+    description: "Wraps the trivy client to reach it via HTTP REST"
+server:
+  port: 8100
+  shutdown: graceful
+spring:
+  application:
+    name: 'trivy-rest-client'
+  lifecycle:
+    timeout-per-shutdown-phase: 360s
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  server:
+    port: 8081
+  endpoint:
+    health:
+      show-details: always
+      cache:
+        time-to-live: 10000
+trivy:
+  tmp-directory: "/eps/tmp/"
+  host: "http://localhost:9000"
+  bin-directory: "/eps/app/trivy"
+  process-timeout: 5
+logging:
+  pattern:
+    level: "%5p [${spring.application.name:-}]"
+  level:
+    de: info
+    org:
+      springframework:
+        web: info

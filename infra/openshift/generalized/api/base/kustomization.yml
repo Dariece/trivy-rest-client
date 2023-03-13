@@ -1,0 +1,7 @@
+commonLabels:
+  app: trivy-rest-client
+resources:
+  - 01-service.yml
+  - 02-deployment-config.yml
+  - 03-route.yml
+

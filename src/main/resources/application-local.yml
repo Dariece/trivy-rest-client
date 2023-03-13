@@ -1,0 +1,9 @@
+logging:
+  pattern:
+    level: "%5p [${spring.application.name:-}]"
+  level:
+    de: debug
+trivy:
+  tmp-directory: "/appl/tmp/trivy-client"
+  host: "http://localhost:9000"
+  bin-directory: "/appl/repo/trivy-rest-client/trivy"

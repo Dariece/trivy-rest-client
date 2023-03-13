@@ -1,0 +1,4 @@
+- op: add
+  path: /spec/template/metadata/annotations/vault.security.banzaicloud.io~1vault-role
+  value:
+    "dev"

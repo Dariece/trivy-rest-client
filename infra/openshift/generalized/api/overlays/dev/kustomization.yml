@@ -1,0 +1,35 @@
+resources:
+  - ../../base
+namespace: prepress-dev
+patchesJson6902:
+  - target:
+      group: apps.openshift.io
+      version: v1
+      kind: DeploymentConfig
+      name: pre
+    path: 01-deployment-image_patch.yml
+  - target:
+      group: apps.openshift.io
+      version: v1
+      kind: DeploymentConfig
+      name: pre
+    path: 03-deployment-env_patch.yml
+  - target:
+      group: apps.openshift.io
+      version: v1
+      kind: DeploymentConfig
+      name: pre
+    path: 04-annotations_patch.yml
+  - target:
+      group: apps.openshift.io
+      version: v1
+      kind: DeploymentConfig
+      name: pre
+    path: 05-replicas_patch.yml
+  - target:
+      group: apps.openshift.io
+      version: v1
+      kind: DeploymentConfig
+      name: pre
+    path: 06-qos_patch.yml
+

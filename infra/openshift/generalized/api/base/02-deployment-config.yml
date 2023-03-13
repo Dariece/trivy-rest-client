@@ -1,0 +1,63 @@
+kind: DeploymentConfig
+apiVersion: apps.openshift.io/v1
+metadata:
+  name: trivy-rest-client
+spec:
+  strategy:
+    type: Rolling
+    rollingParams:
+      updatePeriodSeconds: 1
+      intervalSeconds: 1
+      timeoutSeconds: 600
+      maxUnavailable: 50%
+      maxSurge: 50%
+    resources: {}
+    activeDeadlineSeconds: 21600
+  triggers:
+    - type: ConfigChange
+  replicas: 1
+  revisionHistoryLimit: 2
+  test: false
+  selector:
+    app: trivy-rest-client
+    deploymentconfig: trivy-rest-client
+  template:
+    metadata:
+      labels:
+        domain: ppc
+        app: trivy-rest-client
+        deploymentconfig: trivy-rest-client
+      annotations:
+        vault.security.banzaicloud.io/vault-addr: "https://vault.shared:8200"
+        vault.security.banzaicloud.io/vault-skip-verify: "true"
+    spec:
+      serviceAccountName: trivy-rest-client-sa
+      containers:
+        - name: trivy-rest-client
+          image: >-
+            image-registry.openshift-image-registry.svc:5000/namespace-matters/trivy-rest-client:latest
+          command: [ "sh", "-c", "exec java $JAVA_OPTS -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5084 org.springframework.boot.loader.JarLauncher" ]
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+#          livenessProbe:
+#            httpGet:
+#              path: /actuator/health/liveness
+#              port: 8081
+#            failureThreshold: 3
+#            periodSeconds: 10
+#            initialDelaySeconds: 25
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8081
+            failureThreshold: 3
+            periodSeconds: 10
+            initialDelaySeconds: 25
+            timeoutSeconds: 5
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 390
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
