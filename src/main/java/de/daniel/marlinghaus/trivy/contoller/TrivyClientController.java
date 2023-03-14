@@ -2,6 +2,7 @@ package de.daniel.marlinghaus.trivy.contoller;
 
 import de.daniel.marlinghaus.trivy.contoller.vo.ScanJob;
 import de.daniel.marlinghaus.trivy.service.TrivyClientService;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -26,11 +27,11 @@ public class TrivyClientController {
 
   @PostMapping(
       value = "scan",
-      consumes = MediaType.APPLICATION_OCTET_STREAM_VALUE,
-      produces = MediaType.APPLICATION_JSON_VALUE)
+      consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+      produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
   public ResponseEntity<?> getReport(
-      @RequestPart("job") @Valid final ScanJob job,
-      @RequestPart("sbom") @NotNull(message = "Scanable object is missing.") final MultipartFile scanObject)
+      @RequestPart("scanJob") @Schema(implementation = ScanJob.class) @Valid final ScanJob job,
+      @RequestPart("scanObject") @Schema(implementation = MultipartFile.class) @NotNull(message = "Scanable object is missing.") final MultipartFile scanObject)
       throws Exception {
 
     log.info("request for application {}: format={}; stage{}; pipelineRun={}",

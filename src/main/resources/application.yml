@@ -9,14 +9,19 @@ spring:
   application:
     name: 'trivy-rest-client'
   lifecycle:
-    timeout-per-shutdown-phase: 360s
+    timeout-per-shutdown-phase: 60s
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
 management:
   endpoints:
     web:
       exposure:
         include: "*"
-  server:
-    port: 8081
+#  server:
+#    port: 8081
   endpoint:
     health:
       show-details: always
@@ -26,7 +31,7 @@ trivy:
   tmp-directory: "/eps/tmp/"
   host: "http://localhost:9000"
   bin-directory: "/eps/app/trivy"
-  process-timeout: 5
+  process-timeout: 1
 logging:
   pattern:
     level: "%5p [${spring.application.name:-}]"

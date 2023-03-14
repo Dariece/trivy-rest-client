@@ -9,3 +9,6 @@
       value: "c3dadf8e43cdde57619e97ba8b0c11744321f414f5fff86cfe93c53b68964651"
     - name: TRIVY_BASEURL
       value: "https://github.com/aquasecurity/trivy/releases/download"
+    - name: JAVA_OPTS
+      value: "-XX:MaxRAMPercentage=60"
+
