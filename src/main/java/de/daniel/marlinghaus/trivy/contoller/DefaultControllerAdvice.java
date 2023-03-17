@@ -65,7 +65,7 @@ public class DefaultControllerAdvice {
 
   @ExceptionHandler(value = {Exception.class, RuntimeException.class})
   public ResponseEntity<?> handleException(Exception exception) {
-    log.error(exception.getMessage(), exception);
+//    log.error(exception.getMessage(), exception);
     return buildErrorResponse(String.format("Unknown server error occurred: %s", exception.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
@@ -76,6 +76,7 @@ public class DefaultControllerAdvice {
   }
 
   private ResponseEntity<?> buildErrorResponse(String message, HttpStatus httpStatus) {
+    log.error("message: {}\nstatus:{}",message, httpStatus);
     return ResponseEntity.status(httpStatus).body(message);
   }
 }
