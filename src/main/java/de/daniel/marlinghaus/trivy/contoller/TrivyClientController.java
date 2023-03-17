@@ -2,7 +2,6 @@ package de.daniel.marlinghaus.trivy.contoller;
 
 import de.daniel.marlinghaus.trivy.contoller.vo.ScanJob;
 import de.daniel.marlinghaus.trivy.service.TrivyClientService;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -27,19 +26,20 @@ public class TrivyClientController {
 
   @PostMapping(
       value = "scan",
-      consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
-      produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+      consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+      , produces = MediaType.APPLICATION_OCTET_STREAM_VALUE
+  )
   public ResponseEntity<?> getReport(
-      @RequestPart("scanJob") @Schema(implementation = ScanJob.class) @Valid final ScanJob job,
-      @RequestPart("scanObject") @Schema(implementation = MultipartFile.class) @NotNull(message = "Scanable object is missing.") final MultipartFile scanObject)
+      @RequestPart("scanJob") @Valid final ScanJob scanJob,
+      @RequestPart("scanObject") @NotNull(message = "Scanable object is missing.") final MultipartFile scanObject)
       throws Exception {
 
     log.info("request for application {}: format={}; stage{}; pipelineRun={}",
-        job.getApplicationName(), job.getFormat().name().toLowerCase(), job.getStage(),
-        job.getPipelineRun());
+        scanJob.getApplicationName(), scanJob.getFormat().name().toLowerCase(), scanJob.getStage(),
+        scanJob.getPipelineRun());
 
-    var reportResult = clientService.scan(scanObject, job);
+    var reportResult = clientService.scan(scanObject, scanJob);
 
-    return ResponseEntity.ok().body(reportResult);
+    return ResponseEntity.ok().body(reportResult.getInputStream());
   }
 }

@@ -31,6 +31,8 @@ public class TrivyClientExecutor {
     Process process;
 
     //Build trivy cli command
+    //https://aquasecurity.github.io/trivy/v0.38/docs/references/cli/client/
+    //TODO try cyclonedx format https://aquasecurity.github.io/trivy/v0.38/docs/sbom/cyclonedx/
     String command = String.format("%s/trivy sbom"
             + " --scurity-checks vuln "
             + "--format=json "
