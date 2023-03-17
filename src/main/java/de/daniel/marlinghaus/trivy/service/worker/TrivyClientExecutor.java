@@ -30,12 +30,12 @@ public class TrivyClientExecutor {
   public InputStreamResource executeForSbom(Path sbomFile, Path outFile) {
     Process process;
 
-    //Build trivy cli command
-    //https://aquasecurity.github.io/trivy/v0.38/docs/references/cli/client/
-    //TODO try cyclonedx format https://aquasecurity.github.io/trivy/v0.38/docs/sbom/cyclonedx/
+    // Build trivy cli command
+    //https://aquasecurity.github.io/trivy/v0.38/docs/references/cli/sbom/
+    //filter severity only HIGH,CRITICAL --severity HIGH,CRITICAL
     String command = String.format("%s/trivy sbom"
-            + " --scurity-checks vuln "
-            + "--format=json "
+//            + " --scurity-checks vuln "
+            + "--format cyclonedx "
             + "--server %s"
             + "--exit-code 3 "
             + "%s "
