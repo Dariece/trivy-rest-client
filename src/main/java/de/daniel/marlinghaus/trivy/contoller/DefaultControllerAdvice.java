@@ -1,6 +1,7 @@
 package de.daniel.marlinghaus.trivy.contoller;
 
 import de.daniel.marlinghaus.trivy.exception.InputErrorException;
+import de.daniel.marlinghaus.trivy.exception.TrivyConfigurationException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import java.util.stream.Collectors;
@@ -33,19 +34,15 @@ public class DefaultControllerAdvice {
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<?> handleException(MethodArgumentNotValidException exception) {
-    final String violationMsg =
-        exception.getBindingResult().getAllErrors().stream()
-            .map(DefaultMessageSourceResolvable::getDefaultMessage)
-            .collect(Collectors.joining(", "));
+    final String violationMsg = exception.getBindingResult().getAllErrors().stream()
+        .map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining(", "));
     return buildErrorResponse(violationMsg, HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(ConstraintViolationException.class)
   public ResponseEntity<?> handleException(ConstraintViolationException exception) {
-    final String violationMsg =
-        exception.getConstraintViolations().stream()
-            .map(ConstraintViolation::getMessage)
-            .collect(Collectors.joining(", "));
+    final String violationMsg = exception.getConstraintViolations().stream()
+        .map(ConstraintViolation::getMessage).collect(Collectors.joining(", "));
     return buildErrorResponse(violationMsg, HttpStatus.BAD_REQUEST);
   }
 
@@ -65,17 +62,29 @@ public class DefaultControllerAdvice {
 
   @ExceptionHandler(value = {Exception.class, RuntimeException.class})
   public ResponseEntity<?> handleException(Exception exception) {
-    return buildErrorResponse(String.format("Unknown server error occurred \"%s\"", exception.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+    return buildErrorResponse(
+        String.format("Unknown server error occurred \"%s\"", exception.getMessage()),
+        HttpStatus.INTERNAL_SERVER_ERROR);
   }
-
 
   @ExceptionHandler(InputErrorException.class)
   public ResponseEntity<?> handleException(InputErrorException exception) {
     return buildErrorResponse(exception.getMessage(), exception.getStatus());
   }
 
+  @ExceptionHandler(TrivyConfigurationException.class)
+  public ResponseEntity<?> handleException(TrivyConfigurationException exception) {
+    final String errorMsg = String.join(", ", exception.getErrors());
+    return buildErrorResponse(
+        String.format("%s: exit code %d, %s",
+            exception.getMessage(),
+            exception.getExitCode(),
+            errorMsg),
+        exception.getStatus());
+  }
+
   private ResponseEntity<?> buildErrorResponse(String message, HttpStatus httpStatus) {
-    log.error("{}, status:{}",message, httpStatus);
+    log.error("{}, status:{}", message, httpStatus);
     return ResponseEntity.status(httpStatus).body(message);
   }
 }
