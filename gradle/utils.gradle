@@ -11,11 +11,12 @@ buildscript {
 
 apply plugin: de.undercouch.gradle.tasks.download.DownloadTaskPlugin
 
-def trivyVersion="0.38.2"
+def trivyVersion="0.38.3"
 
 task downloadTrivyBin (type: Download) {
     def baseUrl = "https://github.com/aquasecurity/trivy/releases/download/"
-    src baseUrl + "v${trivyVersion}/trivy_${trivyVersion}_Linux-ARM64.tar.gz"
+//    src baseUrl + "v${trivyVersion}/trivy_${trivyVersion}_Linux-ARM64.tar.gz"
+    src baseUrl + "v${trivyVersion}/trivy_${trivyVersion}_Linux-64bit.tar.gz"
     dest new File(rootProject.projectDir, 'trivy')
     overwrite false
 }

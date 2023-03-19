@@ -1,5 +1,6 @@
 package de.daniel.marlinghaus.trivy.service.worker;
 
+import static java.nio.file.attribute.PosixFilePermission.OTHERS_WRITE;
 import static java.nio.file.attribute.PosixFilePermission.OWNER_EXECUTE;
 import static java.nio.file.attribute.PosixFilePermission.OWNER_READ;
 import static java.nio.file.attribute.PosixFilePermission.OWNER_WRITE;
@@ -45,7 +46,7 @@ public class StorageWriter {
     if (Files.notExists(tmpDir)) {
       //Todo use Files.createTempDirectory to remove dir after graceful shutdown automatically
       Files.createDirectory(trivyProperties.getTmpDirectory(),
-          PosixFilePermissions.asFileAttribute(EnumSet.of(OWNER_READ, OWNER_WRITE, OWNER_EXECUTE)));
+          PosixFilePermissions.asFileAttribute(EnumSet.of(OWNER_READ, OWNER_WRITE, OWNER_EXECUTE, OTHERS_WRITE)));
     }
   }
 

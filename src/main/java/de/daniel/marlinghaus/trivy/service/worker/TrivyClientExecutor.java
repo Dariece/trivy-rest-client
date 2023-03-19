@@ -37,15 +37,15 @@ public class TrivyClientExecutor {
     // Build trivy cli command
     //https://aquasecurity.github.io/trivy/v0.38/docs/references/cli/sbom/
     //filter severity only HIGH,CRITICAL --severity HIGH,CRITICAL
-    String command = String.format("%s/trivy sbom"
-//            + " --scurity-checks vuln "
+    String command = String.format("%s/trivy sbom "
+//            + "--scurity-checks vuln "
             + "--format cyclonedx "
-            + "--server %s"
+            + "--server %s "
             + "--exit-code 3 "
             + "%s "
             + "-o %s"
         , trivyProperties.getBinDirectory(), trivyProperties.host, sbomFile, outFile);
-    log.debug("Executing command: {}" + command);
+    log.debug("Executing command: {}", command);
 
     try {
       process = Runtime.getRuntime().exec(command);
@@ -75,15 +75,21 @@ public class TrivyClientExecutor {
     }
   }
 
-  private void handleStdout(InputStream stdout, InputStream stderr){
-    logProcessStream(stdout, "stdout");
+  private void handleStdout(InputStream stdout, InputStream stderr) {
+//    logProcessStream(stdout, "stdout"); on error to much output
     logProcessStream(stderr, "stderr");
   }
 
-  private void logProcessStream(InputStream processStream, String type){
+  private void logProcessStream(InputStream processStream, String type) {
     try {
-      String stderr = IOUtils.toString(processStream, StandardCharsets.UTF_8);
-      log.error("Trivy {}: {}", type, stderr.replace("\n", " ; ").replace("\r", " ; "));
+      String std = IOUtils.toString(processStream, StandardCharsets.UTF_8).replace("\n", " ; ")
+          .replace("\r", " ; ");
+
+      if ("stdout".equals(type)) {
+        log.debug("Trivy {}: {}", type, std);
+      } else {
+        log.error("Trivy {}: {}", type, std);
+      }
     } catch (Exception e) {
       log.warn("Trivy {} couldn't be opened: {}", type, e.getMessage());
     }

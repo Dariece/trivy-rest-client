@@ -21,5 +21,12 @@ Run in server mode port 9000: \
 ```trivy server --listen 0.0.0.0:9000```
 
 ## Usage app
+Prepare trivy: 
+```
+./gradlew :downloadTrivyBin
+tar xvf trivy\"trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
+chmod +x -R trivy
+```
+
 Start application local: \
 ```./gradlew bootRun --args='--spring.profiles.active=local'```
