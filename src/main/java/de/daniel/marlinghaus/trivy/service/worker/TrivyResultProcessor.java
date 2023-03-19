@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class TrivyResultProcessor {
 
+  //TODO implement
   public InputStreamResource processResult(InputStreamResource retVal) {
     return retVal;
   }

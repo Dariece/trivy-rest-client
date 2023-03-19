@@ -2,6 +2,7 @@ package de.daniel.marlinghaus.trivy.contoller.vo;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,7 +24,7 @@ public class ScanJob {
   /**
    * Scan format
    */
-  @NotBlank(message = "Scan format is missing.")
+  @NotNull(message = "Scan format is missing.")
   private ScanFormat format;
 
   /**

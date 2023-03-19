@@ -1,8 +1,12 @@
 package de.daniel.marlinghaus.trivy.service.worker;
 
 import de.daniel.marlinghaus.trivy.configuration.property.TrivyProperties;
+import io.micrometer.core.instrument.util.IOUtils;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 import lombok.AllArgsConstructor;
@@ -48,6 +52,7 @@ public class TrivyClientExecutor {
 
       if (process.waitFor(trivyProperties.getProcessTimeout(), TimeUnit.MINUTES)) {
         log.debug("Trivy cli exit code {}", process.exitValue());
+        handleStdout(process.getInputStream(), process.getErrorStream());
 
         //TODO log depending on exit code 3=found security issue, 1=fail, 0=ok
         return new InputStreamResource(new FileInputStream(outFile.toFile()));
@@ -58,13 +63,29 @@ public class TrivyClientExecutor {
 
         var message = String.format("Fatal error, trivy process timed out by %s minutes",
             trivyProperties.getProcessTimeout());
-        log.error(message);
+        log.debug(message);
         throw new RuntimeException(message);
       }
+    } catch (FileNotFoundException e) {
+      throw new RuntimeException(e.getMessage());
     } catch (IOException | InterruptedException e) {
       var message = String.format("Fatal error, command %s couldn't be executed", command);
-      log.error(message);
+      log.debug(e.getMessage());
       throw new RuntimeException(message, e);
+    }
+  }
+
+  private void handleStdout(InputStream stdout, InputStream stderr){
+    logProcessStream(stdout, "stdout");
+    logProcessStream(stderr, "stderr");
+  }
+
+  private void logProcessStream(InputStream processStream, String type){
+    try {
+      String stderr = IOUtils.toString(processStream, StandardCharsets.UTF_8);
+      log.error("Trivy {}: {}", type, stderr.replace("\n", " ; ").replace("\r", " ; "));
+    } catch (Exception e) {
+      log.warn("Trivy {} couldn't be opened: {}", type, e.getMessage());
     }
   }
 }
