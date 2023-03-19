@@ -55,7 +55,7 @@ public class TrivyClientService {
             StringUtils.isNoneBlank(job.getPipelineRun())
                 ? job.getPipelineRun() : UUID.randomUUID().toString());
         var sbomFile = tmpDir.resolve(fileName + "-sbom.json");
-        var outFile = tmpDir.resolve(fileName + ".json");
+        var outFile = tmpDir.resolve(fileName + "-trivy-report.json");
 
         //Write scanObject to storage
         try (var outputStream = Files.newOutputStream(sbomFile)) {

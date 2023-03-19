@@ -34,9 +34,9 @@ trivy:
   process-timeout: 1
 logging:
   pattern:
-    level: "%5p [${spring.application.name:-}]"
+    level: "%5p [${spring.application.name}]:"
   level:
     de: info
     org:
       springframework:
-        web: info
+        web: INFO
