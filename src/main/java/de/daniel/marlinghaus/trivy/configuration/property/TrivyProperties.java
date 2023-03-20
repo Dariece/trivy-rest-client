@@ -10,8 +10,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Getter
 @Setter
 public class TrivyProperties {
+
   public Path tmpDirectory;
-  public URI host;
   public Path binDirectory;
+  public URI host;
   public Integer processTimeout;
 }

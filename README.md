@@ -17,16 +17,23 @@ see https://aquasecurity.github.io/trivy/v0.38/getting-started/installation/#use
 
 
 ### Local startup
-Run in server mode port 9000: \
-```trivy server --listen 0.0.0.0:9000```
-
-## Usage app
-Prepare trivy: 
+Prepare trivy:
 ```
 ./gradlew :downloadTrivyBin
 tar xvf trivy\"trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
 chmod +x -R trivy
 ```
 
+Run in server mode port 9000: \
+```bash
+./trivy server --listen 0.0.0.0:9000 --cache-dir /appl/tmp/trivy-client/cache --cache-backend fs -d --skip-db-update
+```
+
+Run in client mode: \
+```
+./trivy sbom -f json --timeout 1m -d -v --scanners vuln --vuln-type library --server "http://0.0.0.0:9000" --exit-code 3 /appl/repo/trivy-rest-client/src/test/resources/sbom.json -o /appl/tmp/trivy-client/vulnerability-sbom-test-local-bec7c176-06db-4d76-8247-6686b73d761d-trivy-report.json
+```
+
+## Usage app
 Start application local: \
 ```./gradlew bootRun --args='--spring.profiles.active=local'```

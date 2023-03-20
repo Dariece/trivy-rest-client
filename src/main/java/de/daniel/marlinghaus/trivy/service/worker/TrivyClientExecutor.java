@@ -26,10 +26,12 @@ import org.springframework.util.StringUtils;
 @Slf4j
 public class TrivyClientExecutor {
 
-  private final TrivyProperties trivyProperties;
+  private final TrivyProperties properties;
+
+  //TODO conditional on Property active-profile = local: zusätzliche parameter --debug und co
 
   /**
-   * Execute trivy cli as process via cmd command
+   * Execute trivy cli as sub-process via cmd command
    *
    * @param sbomFile input file
    * @param outFile  output file
@@ -40,28 +42,34 @@ public class TrivyClientExecutor {
 
     // Build trivy cli command
     //https://aquasecurity.github.io/trivy/v0.38/docs/references/cli/sbom/
+    //only compatible with trivy > v0.38.0
     //filter severity only HIGH,CRITICAL --severity HIGH,CRITICAL
     String command = String.format("%s/trivy sbom "
-//            + "--scurity-checks vuln "
-//            + "--format cyclonedx "
+            + "--scanners vuln "
+            + "--vuln-type library "
             + "--format json "
-            + "--server %s "
+            + "--server \"%s\" "
             + "--exit-code 3 "
+            + "--timeout %dm "
             + "%s "
             + "-o %s"
-        , trivyProperties.getBinDirectory(), trivyProperties.host, sbomFile, outFile);
+        , properties.getBinDirectory(),
+        properties.getHost(),
+        properties.getProcessTimeout(),
+        sbomFile,
+        outFile);
     log.debug("Executing command: {}", command);
 
     try {
       process = Runtime.getRuntime().exec(command);
 
-      if (!process.waitFor(trivyProperties.getProcessTimeout(), TimeUnit.MINUTES)) {
+      if (!process.waitFor(properties.getProcessTimeout(), TimeUnit.MINUTES)) {
         //failure handling for process timeout
         log.debug("Try to kill process pid={}", process.pid());
         process.destroyForcibly();
 
         var message = String.format("Fatal error, trivy process timed out by %s minutes",
-            trivyProperties.getProcessTimeout());
+            properties.getProcessTimeout());
         log.debug(message);
         throw new RuntimeException(message);
       }
