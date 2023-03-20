@@ -3,6 +3,7 @@ package de.daniel.marlinghaus.trivy.contoller.vo;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,4 +39,12 @@ public class ScanJob {
    */
   @Nullable
   private String pipelineRun;
+
+  /**
+   * Severity list that filters the trivy report output
+   */
+  @Nullable
+  private List<CvssSeverity> severities;
+
+
 }

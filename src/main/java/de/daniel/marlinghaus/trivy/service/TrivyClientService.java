@@ -52,7 +52,7 @@ public class TrivyClientService {
         storageWriter.writeInputFile(job, scanObject.getInputStream());
         Path sbomFile = storageWriter.getActualInputFile();
         //Use trivy cli client to scan the object
-        retVal = clientExecutor.executeForSbom(sbomFile, storageWriter.getActualOutputFile());
+        retVal = clientExecutor.executeForSbom(sbomFile, storageWriter.getActualOutputFile(), job);
         //Interpret the scan result
         retVal = trivyResultProcessor.processResult(
             retVal); //TODO filter entries with severity < HIGH, return own format

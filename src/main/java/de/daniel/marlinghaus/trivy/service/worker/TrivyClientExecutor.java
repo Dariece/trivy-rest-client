@@ -1,6 +1,8 @@
 package de.daniel.marlinghaus.trivy.service.worker;
 
 import de.daniel.marlinghaus.trivy.configuration.property.TrivyProperties;
+import de.daniel.marlinghaus.trivy.contoller.vo.CvssSeverity;
+import de.daniel.marlinghaus.trivy.contoller.vo.ScanJob;
 import de.daniel.marlinghaus.trivy.exception.TrivyConfigurationException;
 import io.micrometer.core.instrument.util.IOUtils;
 import java.io.FileInputStream;
@@ -37,13 +39,12 @@ public class TrivyClientExecutor {
    * @param outFile  output file
    * @return InputStreamResource json scan report from trivy
    */
-  public InputStreamResource executeForSbom(Path sbomFile, Path outFile) {
+  public InputStreamResource executeForSbom(Path sbomFile, Path outFile, ScanJob job) {
     Process process;
 
     // Build trivy cli command
     //https://aquasecurity.github.io/trivy/v0.38/docs/references/cli/sbom/
     //only compatible with trivy > v0.38.0
-    //filter severity only HIGH,CRITICAL --severity HIGH,CRITICAL
     String command = String.format("%s/trivy sbom "
             + "--scanners vuln "
             + "--vuln-type library "
@@ -51,11 +52,13 @@ public class TrivyClientExecutor {
             + "--server \"%s\" "
             + "--exit-code 3 "
             + "--timeout %dm "
+            + "%s"
             + "%s "
             + "-o %s"
         , properties.getBinDirectory(),
         properties.getHost(),
         properties.getProcessTimeout(),
+        parseSeverityParam(job.getSeverities()),
         sbomFile,
         outFile);
     log.debug("Executing command: {}", command);
@@ -130,5 +133,24 @@ public class TrivyClientExecutor {
       log.warn(message);
       throw new IOException(message);
     }
+  }
+
+  /**
+   * Parse severity list to trivy cli comma separated format for param --severity
+   *
+   * @param severities severity list
+   * @return trivy cli comma separated string format of severities
+   */
+  private String parseSeverityParam(List<CvssSeverity> severities) {
+    var retVal = "";
+
+    if (!severities.isEmpty()) {
+      var severityStrings = severities.stream().map(Enum::name).toList();
+      retVal = String.format("--severity %s ",
+          severityStrings.size() > 1 ? StringUtils.collectionToCommaDelimitedString(severityStrings)
+              : severityStrings.get(0));
+    }
+
+    return retVal;
   }
 }
