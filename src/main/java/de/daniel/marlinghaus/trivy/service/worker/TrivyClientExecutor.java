@@ -5,11 +5,11 @@ import de.daniel.marlinghaus.trivy.contoller.vo.CvssSeverity;
 import de.daniel.marlinghaus.trivy.contoller.vo.ScanJob;
 import de.daniel.marlinghaus.trivy.exception.TrivyConfigurationException;
 import io.micrometer.core.instrument.util.IOUtils;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
@@ -86,7 +86,7 @@ public class TrivyClientExecutor {
             errorList);
       }
 
-      return new InputStreamResource(new FileInputStream(outFile.toFile()));
+      return new InputStreamResource(Files.newInputStream(outFile));
 
     } catch (FileNotFoundException e) {
       throw new RuntimeException(e.getMessage());

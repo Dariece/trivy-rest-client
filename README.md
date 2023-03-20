@@ -17,6 +17,7 @@ see https://aquasecurity.github.io/trivy/v0.38/getting-started/installation/#use
 
 
 ### Local startup
+(On WSL only with WSL2)\
 Prepare trivy:
 ```
 ./gradlew :downloadTrivyBin
