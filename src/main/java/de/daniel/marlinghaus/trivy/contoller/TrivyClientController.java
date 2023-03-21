@@ -59,6 +59,6 @@ public class TrivyClientController {
         scanJob.getPipelineRun());
 
     return ResponseEntity.ok().body(new ClassPathResource(
-        "classpath:mocks/vulnerability-sbom-test-local-bec7c176-06db-4d76-8247-6686b73d761d-trivy-report.json"));
+        "mocks/vulnerability-sbom-test-local-bec7c176-06db-4d76-8247-6686b73d761d-trivy-report.json"));
   }
 }
