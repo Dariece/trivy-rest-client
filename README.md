@@ -38,3 +38,14 @@ Run in client mode: \
 ## Usage app
 Start application local: \
 ```./gradlew bootRun --args='--spring.profiles.active=local'```
+
+## lines of code
+Ohne leere Zeilen
+```bash
+find src/main -name '*.java' | xargs grep -v '^\s*$' | wc -l
+```
+Ohne leere Zeilen und Kommentare
+```bash
+find src/main -name '*.java' | xargs grep -vP '^\s*$|\/\*(.|[\r\n])*?\*\/|^(\s)*?(\/\/)+(.)*?$' | wc -l
+```
+530
