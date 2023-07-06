@@ -1,0 +1,20 @@
+logging:
+  level:
+    de.daniel.marlinghaus: DEBUG
+trivy:
+  tmp-directory: 'C:\Temp\trivy-client\'
+  host: "http://0.0.0.0:9001"
+  bin-directory: 'C:\dev\repo\trivy-rest-client\trivy'
+springdoc:
+  api-docs:
+    enabled: true
+    path: "/docs"
+  swagger-ui:
+    path: "/docs/ui"
+    enabled: true
+    disable-swagger-default-url: true
+#management:
+#  server:
+#    port: 8081
+#server:
+#  port: 8081

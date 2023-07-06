@@ -18,6 +18,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.util.StreamUtils;
@@ -40,13 +41,28 @@ public class StorageWriter {
    * @throws IOException couldn't create temp dir
    */
   @PostConstruct
+  @Profile("local-win")
+  private void setUpWin() throws IOException {
+    tmpDir = trivyProperties.getTmpDirectory();
+    if (Files.notExists(tmpDir)) {
+      Files.createDirectory(trivyProperties.getTmpDirectory());
+    }
+  }
+
+  /**
+   * Initialize temp work dir before request to speed up processing
+   *
+   * @throws IOException couldn't create temp dir
+   */
+  @PostConstruct
+  @Profile("!local-win")
   private void setUp() throws IOException {
     tmpDir = trivyProperties.getTmpDirectory();
 
     if (Files.notExists(tmpDir)) {
       //Todo use Files.createTempDirectory to remove dir after graceful shutdown automatically
-      Files.createDirectory(trivyProperties.getTmpDirectory(),
-          PosixFilePermissions.asFileAttribute(EnumSet.of(OWNER_READ, OWNER_WRITE, OWNER_EXECUTE, OTHERS_WRITE)));
+      Files.createDirectory(trivyProperties.getTmpDirectory(), PosixFilePermissions.asFileAttribute(
+          EnumSet.of(OWNER_READ, OWNER_WRITE, OWNER_EXECUTE, OTHERS_WRITE)));
     }
   }
 

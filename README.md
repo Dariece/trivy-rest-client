@@ -25,19 +25,29 @@ tar xvf trivy\"trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
 chmod +x -R trivy
 ```
 
+Prepare proxy on win
+```
+$Env:https_proxy=X
+```
+
 Run in server mode port 9000: \
 ```bash
 ./trivy server --listen 0.0.0.0:9000 --cache-dir /appl/tmp/trivy-client/cache --cache-backend fs -d --skip-db-update
+.\trivy server --listen 0.0.0.0:9001 --cache-dir C:\Temp\trivy-client\cache --cache-backend fs -d
 ```
 
 Run in client mode: \
 ```
 ./trivy sbom -f json --timeout 1m -d -v --scanners vuln --vuln-type library --server "http://0.0.0.0:9000" --exit-code 3 /appl/repo/trivy-rest-client/src/test/resources/sbom.json -o /appl/tmp/trivy-client/vulnerability-sbom-test-local-bec7c176-06db-4d76-8247-6686b73d761d-trivy-report.json
+.\trivy sbom -f json --timeout 1m -d -v --scanners vuln --vuln-type library --server "http://0.0.0.0:9001" --exit-code 3 C:\dev\repo\trivy-rest-client\src\test\resources\sbom.json -o C:\Temp\trivy-client\vulnerability-sbom-test-local-bec7c176-06db-4d76-8247-6686b73d761d-trivy-report.json
 ```
 
 ## Usage app
 Start application local: \
-```./gradlew bootRun --args='--spring.profiles.active=local'```
+```
+./gradlew bootRun --args='--spring.profiles.active=local'
+./gradlew bootRun --args='--spring.profiles.active=local-win'
+```
 
 ## lines of code
 Ohne leere Zeilen

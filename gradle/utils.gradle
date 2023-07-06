@@ -15,8 +15,9 @@ def trivyVersion="0.38.3"
 
 task downloadTrivyBin (type: Download) {
     def baseUrl = "https://github.com/aquasecurity/trivy/releases/download/"
-//    src baseUrl + "v${trivyVersion}/trivy_${trivyVersion}_Linux-ARM64.tar.gz"
-    src baseUrl + "v${trivyVersion}/trivy_${trivyVersion}_Linux-64bit.tar.gz"
+    src baseUrl +
+            "v${trivyVersion}/trivy_${trivyVersion}_Linux-64bit.tar.gz"
+//            "v${trivyVersion}/trivy_${trivyVersion}_windows-64bit.zip"
     dest new File(rootProject.projectDir, 'trivy')
     overwrite false
 }
