@@ -8,7 +8,7 @@ WORKDIR /base
 COPY ./ ./
 
 RUN mkdir -p /gradle-home/.gradle && echo 'nexusUsername=deployment\n\
-nexusPassword=NeXuS_EpS-Mltk18\n\
+nexusPassword=FILL\n\
 nexusBaseUrl=FILL\n\
 systemProp.https.proxyHost=FILL\n\
 systemProp.https.proxyPort=FILL\n\
