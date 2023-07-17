@@ -5,7 +5,6 @@ metadata:
   annotations:
     openshift.io/host.generated: 'true'
 spec:
-#  host: ppp-namespace-matters.apps.ti03os0n.postcom.deutschepost.de
   subdomain: ''
   to:
     kind: Service
